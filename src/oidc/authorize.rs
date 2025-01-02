@@ -1,4 +1,4 @@
-use axum::{response::Redirect, Json};
+use axum::{extract::Query, response::Redirect};
 use serde::Deserialize;
 use utoipa::ToSchema;
 
@@ -9,21 +9,23 @@ use crate::OIDC_TAG;
 /// Allows the client to request authorization from the OIDC provider.
 #[utoipa::path(
         get,
-        path = "/authroize",
+        path = "/authorize",
         tag = OIDC_TAG,
         responses(
             (status = 302, description = "Successful authorization request")
         )
     )]
-pub async fn get_authorize(_request: Json<AuthorizationRequest>) -> Redirect {
+pub async fn get_authorize(_query: Query<AuthorizationRequestQuery>) -> Redirect {
     Redirect::temporary("https://example.com")
 }
 
 #[derive(Deserialize, ToSchema)]
-pub struct AuthorizationRequest {
-    pub _client_id: String,
-    pub _response_type: String,
-    pub _redirect_uri: String,
-    pub _scope: String,
-    pub _state: String,
+pub struct AuthorizationRequestQuery {
+    pub client_id: String,
+    pub response_type: String,
+    pub redirect_uri: String,
+    pub scope: String,
+    pub state: String,
 }
+
+// exmaple GET call: http://localhost/authorize?client_id=test&response_type=code&redirect_uri=http://example.com&scope=openid&state=123
