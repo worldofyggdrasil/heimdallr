@@ -7,6 +7,7 @@ use tokio::net::TcpListener;
 use utoipa_axum::router::OpenApiRouter;
 use utoipa_scalar::{Scalar, Servable as ScalarServable};
 
+mod db;
 mod oidc;
 
 const OIDC_TAG: &str = "OIDC";
@@ -26,6 +27,8 @@ async fn main() -> Result<()> {
         .split_for_parts();
 
     let router = router.merge(Scalar::with_url("/scalar", api));
+
+    db::init().await;
 
     let address = SocketAddr::from((Ipv4Addr::UNSPECIFIED, 80));
     let listener = TcpListener::bind(&address).await?;

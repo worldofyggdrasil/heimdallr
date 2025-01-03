@@ -1,0 +1,14 @@
+services:
+  db:
+    image: postgres:17.2-alpine3.21
+    environment:
+      POSTGRES_DB: heimdallr
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: admin
+    ports:
+    - "5432:5432"
+    volumes:
+    - pg-db-data:/var/lib/postgresql/data
+
+volumes:
+  pg-db-data:
